@@ -49,7 +49,8 @@ const Crypto = () => {
               backgroundColor: "#43455c",
               color:"#3bba9c",
               fontWeight: "50",
-              fontFamily: "Montserrat"
+              fontFamily: "Montserrat",
+             
           },
           tableCell:{
               color:"white",
@@ -136,6 +137,7 @@ const Crypto = () => {
         <TableRow
           onClick={() => history.push(`/coins/${coin.id}`)}
           key={coin.name}
+          className={classes.row}
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
           <TableCell 

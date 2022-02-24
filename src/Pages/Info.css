@@ -4,21 +4,24 @@
     padding: .7rem 1rem;
     display: flex;
     flex-direction: column;
-    background-color: #26272b;
-    box-shadow: 0px 0px 12px #18191b;
-    border-radius: 8px;
+    background-color: #2e3047;
+    box-shadow: 0px 0px 2px #2e3047;
+    border-radius: 2px;
+    color: #3bba9c;
+    
 }
 
 .rank {
-    margin: .5 0;
+    margin: .3rem;
 }
 
 .rank-btn {
     border: 1px solid #3bba9c;
-    box-shadow: 0px 0px 8px #3bba9c;
+    box-shadow: 0px 0px 2px #3bba9c;
     background-color: #3bba9c;
     border-radius: 8px;
-    padding: .2rem;
+    padding: .1rem;
+    
 }
 
 .info {
@@ -51,8 +54,9 @@ td, th {
     text-align: center;
 }
 
-th {
-    background-color: #2e3047;
+.content th {
+    background-color: #43455c;
+    color: #3bba9c;
 }
 
 .stats {
@@ -65,17 +69,22 @@ th {
 .stats .row {
     display: flex;
     justify-content: space-between;
-    border-bottom: 1px solid #808080;
+    border-bottom: 1px solid #43455c;
     margin: .6rem 0;
     padding-bottom: .5rem;
 }
 
 .stats .row p:first-child {
-    color: #d3d3d3;
+    color: #43455c;
 }
 
 .about h3 {
     margin: 1rem 0;
+    color: #3bba9c;
+}
+
+.about p{
+    font-size: small;
 }
 
 @media screen and (max-width: 700px) {
