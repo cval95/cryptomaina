@@ -68,48 +68,7 @@
   color: #fff;
 }
 
-.nft {
-  padding-top: 10px;
-  text-align: center;
-  padding: 30px;
-  border: 1px solid lightgray;
-  border-radius: 5px;
-  border-style: solid;
-  border-width: 250%;
-}
 
-.nft-collection {
-  padding-bottom: 10px;
-  
-  font-size: 14px;
-  text-align: center;
-  color:#FFE000;
-  padding-top: 10px;
-  line-height: 25px;
-
-}
-
-
-.nft-name-url{
-  padding-top: 10px;
-  line-height: 25px;
-  font-size: 12px;
-  padding-bottom: 10px;  
-  text-align: center;
-  text-align: center;
-  color: #799F0C;
-
-}
-
-.nft-price {
-  margin-right: 10px;
-  color: #799F0C;
-  text-align: center;
-  padding-top: 10px;
-  line-height: 25px;
-  border-bottom: 1px solid lightgray;
-
-}
 
 @media (max-width: 600px) {
   .coin-app{

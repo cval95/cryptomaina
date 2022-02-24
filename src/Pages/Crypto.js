@@ -3,9 +3,13 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { Table, TableHead, TableRow, TableCell, TableBody, Container, Paper, Typography } from '@material-ui/core';
+import { createTheme,TableContainer, TableHead, TableRow, TableCell,TextField,ThemeProvider, TableBody, Container, Paper, Typography } from '@material-ui/core';
 import CoinInfo from './CoinInfo';
 
+
+export function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 
 
@@ -14,6 +18,7 @@ const Crypto = () => {
     const [search, setSearch] = useState('');
     
     
+
     useEffect(() => {
      axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=gbp&order=market_cap_desc&per_page=100&page=1&sparkline=false')
       .then(res => {
@@ -57,11 +62,8 @@ const Crypto = () => {
               fontWeight: "50",
               fontFamily: "Montserrat",
               fontSize: 20,
-              [theme.breakpoints.down('md')]:{
-                fontSize: 10
-              },
               [theme.breakpoints.down('xs')]:{
-                fontSize: 9
+                fontSize: ".6rem"
               }
               
           },
@@ -79,15 +81,27 @@ const Crypto = () => {
       const classes = useStyles();
       const history = useHistory();
       
-
+      const darkTheme = createTheme({
+        palette: {
+          primary: {
+            main: "#fff",
+          },
+          type: "dark",
+        },
+      });
 
      
   return (
   
   <div>
-<Container style={{textAlign: "center"}
+        
 
-}>
+<Container style={{
+  textAlign: "center", 
+  
+  }
+}
+>
 
 <Typography
           variant="h4"
@@ -96,24 +110,20 @@ const Crypto = () => {
         >
           Cryptocurrency Prices by Market Cap
         </Typography>       
-       
+        <ThemeProvider theme={darkTheme}>
     
-    <div className="coin-search">
-        <h1 className="coin-text">Search a currrency</h1>
-        <form>
-          <input
-            className='coin-input'
-            type='text'
-            style={{ marginBottom: 20, width: "100%" }}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder='Search'
-          />
-        </form>
-
-      </div>
-         
-    <Paper  >
-    <Table style={{display: 'table', tableLayout:'fixed'
+        <TextField
+          label="Search For a Crypto Currency.."
+          id="filled-search"
+          type="search"
+          variant="outlined"
+          style={{ marginBottom: 20, width: "100%" , color: "white"}}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        
+  </ThemeProvider>
+    
+    <TableContainer style={{display: 'table', tableLayout:'fixed'
 
 }}>
     
@@ -131,9 +141,12 @@ const Crypto = () => {
 
       </TableRow>
     </TableHead>
+
+
     <TableBody>
-    {handleSearch().map((coin) => (
-        
+    {handleSearch()
+    .map((coin) => (
+
         <TableRow
           onClick={() => history.push(`/coins/${coin.id}`)}
           key={coin.name}
@@ -179,33 +192,39 @@ const Crypto = () => {
 
           </TableCell>
           
-          <TableCell align="right" className={classes.tableCell}>$,{coin.current_price}</TableCell>
+          <TableCell align="right" className={classes.tableCell}>${coin.current_price}</TableCell>
           <TableCell align="right"
           
           className={classes.tableCell}
+          
           
           >
+          
+            {coin.price_change_percentage_24h.toFixed(2)}%
+          </TableCell>
               
-              {coin.price_change_percentage_24h}%</TableCell>
           <TableCell align="right"
           className={classes.tableCell}
-          >$,{coin.market_cap}</TableCell>
+          
+          >{"$ "}
+           {numberWithCommas(
+                            coin.market_cap.toString().slice(0, -6)
+                          )}</TableCell>
         </TableRow>
-      ))}
+  ))}
     </TableBody>
     
-  </Table>
+  </TableContainer>
 
 
 
-      </Paper>
+  
     
     </Container>
 
-    <CoinInfo coin={coins} />
+  
 
-
-
+   
 
 
   </div>
