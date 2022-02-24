@@ -1,9 +1,10 @@
 import React from 'react';
 import {useEffect, useState} from 'react'
 import axios from 'axios'
-import Pagination from "@material-ui/lab/Pagination";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { Table, TableHead, TableRow, TableCell, TableBody, Container, Typography } from '@material-ui/core';
+import { Table, TableHead, TableRow, TableCell, TableBody, Container, Paper, Typography } from '@material-ui/core';
+import CoinInfo from './CoinInfo';
 
 
 
@@ -11,7 +12,7 @@ import { Table, TableHead, TableRow, TableCell, TableBody, Container, Typography
 const Crypto = () => {
     const [coins, setCoins] = useState([]);
     const [search, setSearch] = useState('');
-    const [page, setPage] = useState(1);
+    
     
     useEffect(() => {
      axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=gbp&order=market_cap_desc&per_page=100&page=1&sparkline=false')
@@ -29,34 +30,55 @@ const Crypto = () => {
         );
       };
   
-      const useStyles = makeStyles({
-        row: {
-          backgroundColor: "#16171a",
-          cursor: "pointer",
-          "&:hover": {
-            backgroundColor: "#131111",
+      const useStyles = makeStyles(theme => {
+
+        return {
+          row: {
+            backgroundColor: "#16171a",
+            cursor: "pointer",
+            "&:hover": {
+              backgroundColor: "#131111",
+            },
+            fontFamily: "Montserrat",
           },
-          fontFamily: "Montserrat",
-        },
-       
-        searchField:{
-            color:"white"
-        }, 
-        tableRowCell:{
-            backgroundColor: "#43455c",
-            color:"#3bba9c",
-            fontWeight: "700",
-            fontFamily: "Montserrat"
-        },
-        tableCell:{
-            color:"white",
-            fontWeight: "700",
-            fontFamily: "Montserrat"
+         
+          searchField:{
+              color:"white"
+          }, 
+          tableRowCell:{
+              backgroundColor: "#43455c",
+              color:"#3bba9c",
+              fontWeight: "50",
+              fontFamily: "Montserrat"
+          },
+          tableCell:{
+              color:"white",
+              fontWeight: "50",
+              fontFamily: "Montserrat",
+              fontSize: 20,
+              [theme.breakpoints.down('md')]:{
+                fontSize: 10
+              },
+              [theme.breakpoints.down('xs')]:{
+                fontSize: 9
+              }
+              
+          },
+          img:{
+            [theme.breakpoints.down('xs')]:{
+              height:20
+            }
+          }
         }
+
+        
        
       });
     
       const classes = useStyles();
+      const history = useHistory();
+      
+
 
      
   return (
@@ -89,85 +111,96 @@ const Crypto = () => {
 
       </div>
          
+    <Paper  >
+    <Table style={{display: 'table', tableLayout:'fixed'
+
+}}>
     
-    <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <TableHead
+    >
     
-        <TableHead
-        >
+      <TableRow>          
+        <TableCell className={classes.tableRowCell}>Coin</TableCell>
+
+        <TableCell align="right" className={classes.tableRowCell}>Price</TableCell>
+
+        <TableCell align="right"  className={classes.tableRowCell}>24 Hour Change</TableCell>
+
+        <TableCell align="right"  className={classes.tableRowCell}>Market Cap</TableCell>
+
+      </TableRow>
+    </TableHead>
+    <TableBody>
+    {handleSearch().map((coin) => (
         
-          <TableRow>          
-            <TableCell className={classes.tableRowCell}>Coin</TableCell>
-
-            <TableCell align="right" className={classes.tableRowCell}>Price</TableCell>
-
-            <TableCell align="right"  className={classes.tableRowCell}>24 Hour Change</TableCell>
-
-            <TableCell align="right"  className={classes.tableRowCell}>Market Cap</TableCell>
-
-          </TableRow>
-        </TableHead>
-        <TableBody>
-        {handleSearch().map((coin) => (
-            
-            <TableRow
-              key={coin.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell 
-              component="th"
-              scope="row"
+        <TableRow
+          onClick={() => history.push(`/coins/${coin.id}`)}
+          key={coin.name}
+          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        >
+          <TableCell 
+          onClick={()=>{console.log("test")}}
+          component="th"
+          scope="row"
+          style={{
+            display: "flex",
+            gap: 10,
+          }}
+        >
+          <img
+          className={classes.img}
+            src={coin?.image}
+            alt={coin.name}
+            height="50"
+            style={{ marginBottom: 10 }}
+          />
+          <div
+            style={{ display: "flex", flexDirection: "column" }}
+          >
+            <span
+            className={classes.tableCell}
               style={{
-                display: "flex",
-                gap: 15,
+                textTransform: "uppercase",
+               
               }}
             >
-              <img
-                src={coin?.image}
-                alt={coin.name}
-                height="50"
-                style={{ marginBottom: 10 }}
-              />
-              <div
-                style={{ display: "flex", flexDirection: "column" }}
-              >
-                <span
-                className={classes.tableCell}
-                  style={{
-                    textTransform: "uppercase",
-                    fontSize: 22,
-                  }}
-                >
-                  {coin.symbol}
-                </span>
-                <span 
-                className={classes.tableCell}
-                style={{ color: "#707793" }}>
-                  {coin.name}
-                </span>
-              </div>
+              {coin.symbol}
+            </span>
+            <span 
+            className={classes.tableCell}
+            style={{ color: "#707793" ,
+            
+            }}>
+              {coin.name}
+            </span>
+          </div>
 
-              </TableCell>
+          </TableCell>
+          
+          <TableCell align="right" className={classes.tableCell}>$,{coin.current_price}</TableCell>
+          <TableCell align="right"
+          
+          className={classes.tableCell}
+          
+          >
               
-              <TableCell align="right" className={classes.tableCell}>$,{coin.current_price}</TableCell>
-              <TableCell align="right"
-              
-              className={classes.tableCell}
-              
-              >
-                  
-                  {coin.price_change_percentage_24h}%</TableCell>
-              <TableCell align="right"
-              className={classes.tableCell}
-              >$,{coin.market_cap}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-        
-      </Table>
+              {coin.price_change_percentage_24h}%</TableCell>
+          <TableCell align="right"
+          className={classes.tableCell}
+          >$,{coin.market_cap}</TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+    
+  </Table>
 
+
+
+      </Paper>
+    
     </Container>
 
-
+    <CoinInfo coin={coins} />
 
 
 
