@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import { Grid, Container, Card, Typography, Link, CardMedia, CardContent, CardActions, Button, makeStyles } from '@material-ui/core';
+import Loader from './Loader';
 
 const useStyles = makeStyles({
 
@@ -22,7 +23,6 @@ export const News = () => {
 
 
 
-
   useEffect(() => {
 
     const options = {
@@ -39,7 +39,9 @@ export const News = () => {
       console.log(response.data)
       setArticles(response.data)
 
-  }).catch((error) => {
+  })
+  setLoading(true)
+  .catch((error) => {
       console.error(error)
   })
 }, [])
@@ -48,10 +50,14 @@ export const News = () => {
 
     return (
     <>
+
+
       <h2 className="header-feed">News Feed</h2>
 
-
 <div>
+
+
+
 
 <Grid
       container
