@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import axios from 'axios';
-import { Grid, Container, Card, Typography, Link, CardMedia, CardContent, CardActions, Button, makeStyles } from '@material-ui/core';
-import Loader from './Loader';
+import { Grid, LinearProgress,Card, Typography, Link, CardMedia, CardContent, CardActions, Button, makeStyles } from '@material-ui/core';
+import Loading from '../components/Loading';
 
 const useStyles = makeStyles({
 
@@ -20,7 +20,7 @@ desc:{
 export const News = () => {
   const [articles, setArticles] = useState([])
   const classes = useStyles()
-
+  const [isLoading, setIsLoading] = useState(true);
 
 
   useEffect(() => {
@@ -38,23 +38,33 @@ export const News = () => {
     axios.request(options).then((response) => {
       console.log(response.data)
       setArticles(response.data)
-
+      
   })
-  setLoading(true)
+ 
   .catch((error) => {
       console.error(error)
   })
 }, [])
 
-    
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2500);
+  })
+
 
     return (
     <>
 
 
       <h2 className="header-feed">News Feed</h2>
-
+      {isLoading==true?
+    <Loading/>:
 <div>
+
+
+
 
 
 
@@ -102,8 +112,9 @@ export const News = () => {
     </Grid>
       ))}
   </Grid>
- 
+    
 </div>
+}
 
 
 
@@ -116,3 +127,4 @@ export const News = () => {
    
     )
 }
+

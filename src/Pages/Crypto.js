@@ -3,20 +3,24 @@ import {useEffect, useState} from 'react'
 import axios from 'axios'
 import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { createTheme,TableContainer, TableHead, TableRow, TableCell,TextField,ThemeProvider, TableBody, Container, Paper, Typography } from '@material-ui/core';
-import CoinInfo from './CoinInfo';
+import { createTheme,TableContainer, TableHead, TableRow, Table, TableCell,ThemeProvider, TableBody, Container, LinearProgress, Typography } from '@material-ui/core';
+import Loading from '../components/Loading';
+import Pagination from "@material-ui/lab/Pagination";
+import Backdrop from '@material-ui/core/Backdrop';
 
 
 export function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-
+const CoinList = () =>
+  `https://api.coingecko.com/api/v3/coins/markets?vs_currency=&order=market_cap_desc&per_page=100&page=1&sparkline=false`;
 
 const Crypto = () => {
     const [coins, setCoins] = useState([]);
     const [search, setSearch] = useState('');
-    
+    const [page, setPage] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
     
 
     useEffect(() => {
@@ -24,8 +28,11 @@ const Crypto = () => {
       .then(res => {
         setCoins(res.data);
         console.log(res.data);
-      }).catch(error => console.log(error))
+      })
+      .catch(error => console.log(error))
     }, []);
+
+   
 
     const handleSearch = () => {
         return coins.filter(
@@ -34,6 +41,16 @@ const Crypto = () => {
             coin.symbol.toLowerCase().includes(search)
         );
       };
+
+      useEffect(() => {
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 2500);
+      })
+    
+    
+
+     
   
       const useStyles = makeStyles(theme => {
 
@@ -67,10 +84,16 @@ const Crypto = () => {
               }
               
           },
+          pagination: {
+             
+              color: "white",
+            
+          },
           img:{
             [theme.breakpoints.down('xs')]:{
               height:20
-            }
+            },
+            
           }
         }
 
@@ -92,9 +115,9 @@ const Crypto = () => {
 
      
   return (
-  
+   
   <div>
-        
+       
 
 <Container style={{
   textAlign: "center", 
@@ -109,23 +132,28 @@ const Crypto = () => {
           className={classes.tableCell}
         >
           Cryptocurrency Prices by Market Cap
-        </Typography>       
-        <ThemeProvider theme={darkTheme}>
-    
-        <TextField
-          label="Search For a Crypto Currency.."
-          id="filled-search"
-          type="search"
-          variant="outlined"
-          style={{ marginBottom: 20, width: "100%" , color: "white"}}
-          onChange={(e) => setSearch(e.target.value)}
-        />
+        </Typography>   
         
-  </ThemeProvider>
-    
+        <div className="coin-search">
+        <h1 className="coin-text">Search a currrency</h1>
+        <form>
+          <input
+            className='coin-input'
+            type='text'
+            style={{ marginBottom: 20, width: "100%" }}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder='Search'
+          />
+        </form>
+
+      </div>
+      {isLoading==true?
+        <Loading/>:
+      
     <TableContainer style={{display: 'table', tableLayout:'fixed'
 
 }}>
+
     
     <TableHead
     >
@@ -142,17 +170,20 @@ const Crypto = () => {
       </TableRow>
     </TableHead>
 
-
+    
     <TableBody>
+   
     {handleSearch()
+    .slice((page - 1) * 10, (page - 1) * 10 + 10)
     .map((coin) => (
-
+      
         <TableRow
           onClick={() => history.push(`/coins/${coin.id}`)}
           key={coin.name}
           className={classes.row}
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
+          
           <TableCell 
           onClick={()=>{console.log("test")}}
           component="th"
@@ -192,7 +223,7 @@ const Crypto = () => {
 
           </TableCell>
           
-          <TableCell align="right" className={classes.tableCell}>${coin.current_price}</TableCell>
+          <TableCell align="right" className={classes.tableCell}>{"$"}{numberWithCommas(coin.current_price.toFixed(2))}</TableCell>
           <TableCell align="right"
           
           className={classes.tableCell}
@@ -206,18 +237,39 @@ const Crypto = () => {
           <TableCell align="right"
           className={classes.tableCell}
           
-          >{"$ "}
+          >{"$"}
            {numberWithCommas(
                             coin.market_cap.toString().slice(0, -6)
                           )}</TableCell>
         </TableRow>
   ))}
+  
     </TableBody>
     
+         
   </TableContainer>
 
+}   
 
 
+  <ThemeProvider theme={darkTheme}>
+  <Pagination
+  className={ classes.pagination}
+          count={(handleSearch()?.length / 10).toFixed(0)}
+          style={{
+            padding: 50,
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            
+          }}
+          onChange={(_, value) => {
+            setPage(value);
+            window.scroll(0, 450);
+          }}
+        />
+
+</ThemeProvider>
   
     
     </Container>
